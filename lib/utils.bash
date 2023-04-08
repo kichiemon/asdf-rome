@@ -2,10 +2,9 @@
 
 set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for rome.
 GH_REPO="https://github.com/rome/tools"
 TOOL_NAME="rome"
-TOOL_TEST="./rome help"
+TOOL_TEST="rome help"
 
 fail() {
 	echo -e "asdf-$TOOL_NAME: $*"
@@ -27,13 +26,38 @@ sort_versions() {
 list_github_tags() {
 	git ls-remote --tags --refs "$GH_REPO" |
 		grep -o 'refs/tags/.*' | cut -d/ -f3- |
-		sed 's/^v//' # NOTE: You might want to adapt this sed to remove non-version strings from tags
+		sed 's/^cli\/v//' # NOTE: You might want to adapt this sed to remove non-version strings from tags
 }
 
 list_all_versions() {
-	# TODO: Adapt this. By default we simply list the tag names from GitHub releases.
-	# Change this function if rome has other means of determining installable versions.
 	list_github_tags
+}
+
+# judge download url for platform - see https://docs.rome.tools/standalone-executable/
+download_url_for_platform() {
+	local v="$$1"
+	if [ "$(uname)" == "Darwin" ]; then
+		echo "https://github.com/rome/tools/releases/download/cli%2Fv${v}/rome-darwin-arm64"
+	elif [ "$(printf '%s' "$(uname -s)" | cut -c 1-5)" == "Linux" ]; then
+		echo "https://github.com/rome/tools/releases/download/cli%2Fv${v}/rome-darwin-arm64"
+	elif [ "$(printf '%s' "$(uname -s)" | cut -c 1-10)" == "MINGW32_NT" ]; then
+		echo "https://github.com/rome/tools/releases/download/cli%2Fv${v}/rome-win32-x64.exe"
+	elif [ "$(printf '%s' "$(uname -s)" | cut -c 1-10)" == "MINGW64_NT" ]; then
+		echo "https://github.com/rome/tools/releases/download/cli%2Fv${v}/rome-win32-x64.exe"
+	fi
+}
+
+# judge download url for platform - see https://docs.rome.tools/standalone-executable/
+download_file_extension_for_platform() {
+	if [ "$(uname)" == "Darwin" ]; then
+		echo ""
+	elif [ "$(printf '%s' "$(uname -s)" | cut -c 1-5)" == "Linux" ]; then
+		echo ""
+	elif [ "$(printf '%s' "$(uname -s)" | cut -c 1-10)" == "MINGW32_NT" ]; then
+		echo ".exe"
+	elif [ "$(printf '%s' "$(uname -s)" | cut -c 1-10)" == "MINGW64_NT" ]; then
+		echo ".exe"
+	fi
 }
 
 download_release() {
@@ -41,8 +65,7 @@ download_release() {
 	version="$1"
 	filename="$2"
 
-	# TODO: Adapt the release URL convention for rome
-	url="$GH_REPO/archive/v${version}.tar.gz"
+	url=$(download_url_for_platform "$version")
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
@@ -59,9 +82,8 @@ install_version() {
 
 	(
 		mkdir -p "$install_path"
-		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
+		cp -r "$ASDF_DOWNLOAD_PATH" "$install_path"
 
-		# TODO: Assert rome executable exists.
 		local tool_cmd
 		tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
 		test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
