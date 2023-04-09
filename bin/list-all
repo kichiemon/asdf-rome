@@ -2,10 +2,14 @@
 
 set -euo pipefail
 
+# Get the path of the current script.
 current_script_path=${BASH_SOURCE[0]}
+
+# Get the parent directory of the current script.
 plugin_dir=$(dirname "$(dirname "$current_script_path")")
 
-# shellcheck source=../lib/utils.bash
+# Load utility functions.
 source "${plugin_dir}/lib/utils.bash"
 
+# List all versions of the tool, sort them, and print them.
 list_all_versions | sort_versions | xargs echo
