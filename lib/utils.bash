@@ -17,7 +17,7 @@ curl_opts=(-fsSL)
 # NOTE: You might want to remove this if rome is not hosted on GitHub releases.
 # Use an authorization token for accessing GitHub API
 if [ -n "${GITHUB_API_TOKEN:-}" ]; then
-	curl_opts=("${curl_opts[@]}" -r -H "Authorization: token $GITHUB_API_TOKEN")
+	curl_opts=("${curl_opts[@]}" -H "Authorization: token $GITHUB_API_TOKEN")
 fi
 
 # Sort versions in a format compatible with the version of the tool
@@ -76,14 +76,14 @@ download_url_for_platform() {
 	# Determine the appropriate download URL based on the machine OS and architecture
 	if [ "$machine_os" == "darwin" ]; then
 		case "$machine_arch" in
-		amd64) echo "https://github.com/rome/tools/releases/download/cli%2Fv$v/rome-darwin-x64" ;;
-		arm64) echo "https://github.com/rome/tools/releases/download/cli%2Fv$v/rome-darwin-arm64" ;;
+		amd64) echo "https://github.com/rome/tools/releases/download/cli/v$v/rome-darwin-x64" ;;
+		arm64) echo "https://github.com/rome/tools/releases/download/cli/v$v/rome-darwin-arm64" ;;
 		*) fail "not supported" ;;
 		esac
 	else
 		case "$machine_arch" in
-		amd64) echo "https://github.com/rome/tools/releases/download/cli%2Fv$v/rome-linux-x64" ;;
-		arm64) echo "https://github.com/rome/tools/releases/download/cli%2Fv$v/rome-linux-arm64" ;;
+		amd64) echo "https://github.com/rome/tools/releases/download/cli/v$v/rome-linux-x64" ;;
+		arm64) echo "https://github.com/rome/tools/releases/download/cli/v$v/rome-linux-arm64" ;;
 		*) fail "not supported" ;;
 		esac
 	fi
