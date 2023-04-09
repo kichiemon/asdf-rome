@@ -52,6 +52,7 @@ get_machine_arch() {
 	*) fail "Architecture not supported: $ARCH" ;;
 	esac
 }
+
 # Get the machine operating system, converting it to lowercase
 get_machine_os() {
 	local OS=$(uname -s | tr '[:upper:]' '[:lower:]')
