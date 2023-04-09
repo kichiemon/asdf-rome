@@ -40,7 +40,8 @@ list_all_versions() {
 
 # Get the machine architecture, converting it to lowercase
 get_machine_arch() {
-	local ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
+	local ARCH
+	ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
 
 	# Map the machine architecture to the appropriate value
 	case "${ARCH}" in
@@ -55,10 +56,11 @@ get_machine_arch() {
 
 # Get the machine operating system, converting it to lowercase
 get_machine_os() {
-	local OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+	local OS
+	OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
 	# Map the machine operating system to the appropriate value
-	case "${OS}" in
+	case "$OS" in
 	darwin*) echo "darwin" ;;
 	linux*) echo "linux" ;;
 	*) fail "OS not supported: ${OS}" ;;
@@ -67,11 +69,12 @@ get_machine_os() {
 
 # judge download url for platform - see https://docs.rome.tools/standalone-executable/
 download_url_for_platform() {
-	local v="$1"
-	local machine_os=$(get_machine_os)
-	local machine_arch=$(get_machine_arch)
+	local v machine_os machine_arch
+	v="$1"
+	machine_os=$(get_machine_os)
+	machine_arch=$(get_machine_arch)
 	# Determine the appropriate download URL based on the machine OS and architecture
-	if [ $machine_os == "darwin" ]; then
+	if [ "$machine_os" == "darwin" ]; then
 		case "$machine_arch" in
 		amd64) echo "https://github.com/rome/tools/releases/download/cli%2Fv$v/rome-darwin-x64" ;;
 		arm64) echo "https://github.com/rome/tools/releases/download/cli%2Fv$v/rome-darwin-arm64" ;;
@@ -96,7 +99,7 @@ download_release() {
 
 	# Download the release using curl.
 	echo "* Downloading $TOOL_NAME release $version..."
-	curl "${curl_opts[@]}" -o $filename -C - "$url" || fail "Could not download $url"
+	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 }
 
 # This function installs the tool.
@@ -114,7 +117,7 @@ install_version() {
 	(
 		mkdir -p "$install_path"
 		cp -r "$ASDF_DOWNLOAD_PATH/$TOOL_NAME" "$install_path"
-		chmod +x $install_path/$TOOL_NAME
+		chmod +x "$install_path/$TOOL_NAME"
 
 		# Test the installation.
 		local tool_cmd
