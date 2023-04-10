@@ -42,7 +42,7 @@ asdf install rome latest
 asdf global rome latest
 
 # Now rome commands are available
-./rome help
+rome help
 ```
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
