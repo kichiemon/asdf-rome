@@ -3,7 +3,7 @@
 # asdf-rome [![Build](https://github.com/kichiemon/asdf-rome/actions/workflows/build.yml/badge.svg)](https://github.com/kichiemon/asdf-rome/actions/workflows/build.yml) [![Lint](https://github.com/kichiemon/asdf-rome/actions/workflows/lint.yml/badge.svg)](https://github.com/kichiemon/asdf-rome/actions/workflows/lint.yml)
 
 
-[rome](https://rome.tools/) plugin for the [asdf version manager](https://asdf-vm.com).
+[Rome](https://rome.tools/) plugin for the [asdf version manager](https://asdf-vm.com).
 
 </div>
 
